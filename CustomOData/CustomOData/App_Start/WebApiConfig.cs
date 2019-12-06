@@ -16,6 +16,12 @@ namespace CustomOData
             ODataConventionModelBuilder oDataConventionModelBuilder = new ODataConventionModelBuilder();
             oDataConventionModelBuilder.EntitySet<Employee>("Employees");
             config.MapODataServiceRoute("ODataRoute", "api", oDataConventionModelBuilder.GetEdmModel());
+            config.Count()
+                .Filter()
+                .OrderBy()
+                .Expand()
+                .Select()
+                .MaxTop(null);
 
             // Web API routes
             //config.MapHttpAttributeRoutes();

@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Autofac;
+using Autofac.Integration.WebApi;
+using CustomOData.App_Start.IOC;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -13,6 +16,10 @@ namespace CustomOData
     {
         protected void Application_Start()
         {
+            IContainer container = ContainerConfig.BuildContainer();
+            HttpConfiguration httpConfiguration = GlobalConfiguration.Configuration;
+            httpConfiguration.DependencyResolver = new AutofacWebApiDependencyResolver(container);
+
             AreaRegistration.RegisterAllAreas();
             GlobalConfiguration.Configure(WebApiConfig.Register);
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);

@@ -14,7 +14,8 @@ namespace CustomOData.App_Start.IOC
             ContainerBuilder containerBuilder = new ContainerBuilder();
 
             containerBuilder
-                .RegisterModule<WebApiModule>();
+                .RegisterModule<WebApiModule>()
+                .RegisterModule<DataAccessModule>();
 
             IContainer container = containerBuilder.Build();
             return container;

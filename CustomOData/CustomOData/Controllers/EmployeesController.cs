@@ -1,15 +1,10 @@
 ﻿using CustomOData.DataAccess.Abstractions;
 using CustomOData.Models;
 using Microsoft.AspNet.OData;
-using Microsoft.AspNet.OData.Builder;
 using Microsoft.AspNet.OData.Extensions;
 using Microsoft.AspNet.OData.Query;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Web.Http;
-using System.Web.Http.Hosting;
-using HttpGetAttribute = System.Web.Mvc.HttpGetAttribute;
+using System.Web.Mvc;
 
 namespace CustomOData.Controllers
 {
@@ -21,12 +16,12 @@ namespace CustomOData.Controllers
         }
         // GET: Employees
         [HttpGet]
-        public List<Employee> Get(ODataQueryOptions oDataQueryOptions)
+        public IEnumerable<Employee> Get(ODataQueryOptions oDataQueryOptions)
         {
-            List<Employee> employees = new List<Employee>();
+            IEnumerable<Employee> employees = new List<Employee>();
             using (IUnitOfWork unitOfWork = _dbService.UnitOfWork.Begin())
             {
-                employees = _dbService.GetEmployees(oDataQueryOptions).ToList();
+                employees = _dbService.GetEmployees(oDataQueryOptions);
                 unitOfWork.Commit();
             }
             

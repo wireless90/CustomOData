@@ -28,13 +28,10 @@ namespace CustomOData.DataAccess
                 .Limit(top.HasValue ? top.Value : 0)
                 .Select(oDataQueryOptions.SelectExpand?.RawSelect.Split(','));
                 
-;
-
             SqlResult sqlResult = _compiler.Compile(query);
 
             IEnumerable<Employee> employees =
                 _dbConnection.Query<Employee>(sqlResult.Sql, sqlResult.NamedBindings, UnitOfWork.GetDbTransaction());
-
 
             return employees;
                 

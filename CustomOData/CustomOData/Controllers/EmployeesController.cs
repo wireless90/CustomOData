@@ -1,12 +1,15 @@
 ﻿using CustomOData.DataAccess.Abstractions;
 using CustomOData.Models;
 using Microsoft.AspNet.OData;
+using Microsoft.AspNet.OData.Builder;
+using Microsoft.AspNet.OData.Extensions;
 using Microsoft.AspNet.OData.Query;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
-using System.Web.Mvc;
+using System.Net.Http;
+using System.Web.Http;
+using System.Web.Http.Hosting;
+using HttpGetAttribute = System.Web.Mvc.HttpGetAttribute;
 
 namespace CustomOData.Controllers
 {
@@ -26,7 +29,8 @@ namespace CustomOData.Controllers
                 employees = _dbService.GetEmployees(oDataQueryOptions).ToList();
                 unitOfWork.Commit();
             }
-
+            
+            Request.ODataProperties().SelectExpandClause = oDataQueryOptions?.SelectExpand?.SelectExpandClause;
 
             return employees;
         }

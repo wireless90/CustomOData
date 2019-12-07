@@ -22,11 +22,13 @@ namespace CustomOData.DataAccess
         {
             int? top = oDataQueryOptions?.Top?.Value;
             int? skip = oDataQueryOptions?.Skip?.Value;
-
             Query query = new Query()
                 .From(oDataQueryOptions.Context.NavigationSource.Name)
                 .Skip(skip.HasValue ? skip.Value : 0)
-                .Limit(top.HasValue ? top.Value : 0);
+                .Limit(top.HasValue ? top.Value : 0)
+                .Select(oDataQueryOptions.SelectExpand?.RawSelect.Split(','));
+                
+;
 
             SqlResult sqlResult = _compiler.Compile(query);
 

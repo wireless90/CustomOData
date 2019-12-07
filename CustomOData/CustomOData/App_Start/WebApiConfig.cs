@@ -22,7 +22,7 @@ namespace CustomOData
                 .Expand()
                 .Select()
                 .MaxTop(null);
-
+            config.EnableDependencyInjection();
             // Web API routes
             //config.MapHttpAttributeRoutes();
 

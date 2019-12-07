@@ -14,25 +14,26 @@ namespace CustomOData.DataAccess
             _dbConnection = dbConnection;
         }
 
-        public void Begin()
+        public IUnitOfWork Begin()
+
         {
             if (_dbConnection.State == ConnectionState.Closed)
             {
                 _dbConnection.Open();
             }
             _dbTransaction = _dbConnection.BeginTransaction();
+
+            return this;
         }
 
         public void Commit()
         {
             _dbTransaction.Commit();
-            Dispose();
         }
 
         public void Rollback()
         {
             _dbTransaction.Rollback();
-            Dispose();
         }
 
         public void Close()
@@ -44,7 +45,7 @@ namespace CustomOData.DataAccess
         }
         public void Dispose()
         {
-            Close();
+            
 
             if (_dbTransaction != null)
             {
@@ -53,12 +54,23 @@ namespace CustomOData.DataAccess
 
             if (_dbConnection != null)
             {
+                Close();
                 _dbConnection.Dispose();
             }
 
 
             _dbTransaction = null;
             _dbConnection = null;
+        }
+
+        public IDbTransaction GetDbTransaction()
+        {
+            return _dbTransaction;
+        }
+
+        public IDbConnection GetDbConnection()
+        {
+            return _dbConnection;
         }
 
         private IDbConnection _dbConnection;

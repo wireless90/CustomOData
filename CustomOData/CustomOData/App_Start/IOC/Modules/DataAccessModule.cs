@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using CustomOData.DataAccess;
 using CustomOData.DataAccess.Abstractions;
+using SqlKata.Compilers;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -28,8 +29,12 @@ namespace CustomOData.App_Start.IOC.Modules
             containerBuilder.RegisterType<UnitOfWork>()
                 .As<IUnitOfWork>();
 
+            containerBuilder.RegisterType<SqlServerCompiler>()
+                .As<Compiler>();
+
             containerBuilder.RegisterType<DBService>()
-                .As<IDBService>();
+                .As<IDBService>()
+                .ExternallyOwned();
 
             base.Load(containerBuilder);
         }

@@ -1,4 +1,5 @@
-﻿using CustomOData.Models;
+﻿using CustomOData.DataAccess.Abstractions;
+using CustomOData.Models;
 using Microsoft.AspNet.OData;
 using Microsoft.AspNet.OData.Query;
 using System;
@@ -11,12 +12,25 @@ namespace CustomOData.Controllers
 {
     public class EmployeesController : ODataController
     {
+        public EmployeesController(IDBService dbService)
+        {
+            _dbService = dbService;
+        }
         // GET: Employees
         [HttpGet]
-        [EnableQuery]
         public List<Employee> Get(ODataQueryOptions oDataQueryOptions)
         {
-            return new List<Employee>() { new Employee() { Age = 10, Id = 1, Name = "Razali" } };
+            List<Employee> employees = new List<Employee>();
+            using (IUnitOfWork unitOfWork = _dbService.UnitOfWork.Begin())
+            {
+                employees = _dbService.GetEmployees(oDataQueryOptions).ToList();
+                unitOfWork.Commit();
+            }
+
+
+            return employees;
         }
+
+        private IDBService _dbService;
     }
 }

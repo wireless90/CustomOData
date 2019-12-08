@@ -27,7 +27,7 @@ namespace CustomOData.Controllers
             
             if(oDataQueryOptions.SelectExpand != null)
             {
-                Request.ODataProperties().SelectExpandClause = oDataQueryOptions?.SelectExpand.SelectExpandClause;
+                Request.ODataProperties().SelectExpandClause = oDataQueryOptions.SelectExpand.SelectExpandClause;
             }
 
             return employees;

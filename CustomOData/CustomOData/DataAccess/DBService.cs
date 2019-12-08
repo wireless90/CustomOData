@@ -27,7 +27,7 @@ namespace CustomOData.DataAccess
                 .From(oDataQueryOptions.Context.NavigationSource.Name)
                 .Skip(skip.HasValue ? skip.Value : 0)
                 .Limit(top.HasValue ? top.Value : 0)
-                .OrderByOData(oDataQueryOptions.OrderBy.OrderByClause)
+                .OrderByOData(oDataQueryOptions.OrderBy?.OrderByClause)
                 .Select(oDataQueryOptions.SelectExpand?.RawSelect.Split(','));
             
             SqlResult sqlResult = _compiler.Compile(query);

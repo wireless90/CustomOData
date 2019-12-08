@@ -25,7 +25,10 @@ namespace CustomOData.Controllers
                 unitOfWork.Commit();
             }
             
-            Request.ODataProperties().SelectExpandClause = oDataQueryOptions?.SelectExpand?.SelectExpandClause;
+            if(oDataQueryOptions.SelectExpand != null)
+            {
+                Request.ODataProperties().SelectExpandClause = oDataQueryOptions?.SelectExpand.SelectExpandClause;
+            }
 
             return employees;
         }

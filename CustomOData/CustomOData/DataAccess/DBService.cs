@@ -29,8 +29,11 @@ namespace CustomOData.DataAccess
                 .Limit(top.HasValue ? top.Value : 0)
                 .OrderByOData(oDataQueryOptions.OrderBy?.OrderByClause)
                 .FilterOData(oDataQueryOptions.Filter?.FilterClause?.Expression)
-                .Select(oDataQueryOptions.SelectExpand?.RawSelect.Split(','));
-            
+                .Select(oDataQueryOptions.SelectExpand == null ? new string[] { "*" } : oDataQueryOptions.SelectExpand.RawSelect.Split(',')); 
+                
+
+
+
             SqlResult sqlResult = _compiler.Compile(query);
 
             IEnumerable<Employee> employees =

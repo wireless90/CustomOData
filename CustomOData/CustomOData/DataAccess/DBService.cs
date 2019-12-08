@@ -6,6 +6,7 @@ using SqlKata.Compilers;
 using System.Collections.Generic;
 using System.Data;
 using Dapper;
+using CustomOData.Logic.SqlKataHelper;
 
 namespace CustomOData.DataAccess
 {
@@ -26,15 +27,15 @@ namespace CustomOData.DataAccess
                 .From(oDataQueryOptions.Context.NavigationSource.Name)
                 .Skip(skip.HasValue ? skip.Value : 0)
                 .Limit(top.HasValue ? top.Value : 0)
+                .OrderByOData(oDataQueryOptions.OrderBy.OrderByClause)
                 .Select(oDataQueryOptions.SelectExpand?.RawSelect.Split(','));
-                
+            
             SqlResult sqlResult = _compiler.Compile(query);
 
             IEnumerable<Employee> employees =
                 _dbConnection.Query<Employee>(sqlResult.Sql, sqlResult.NamedBindings, UnitOfWork.GetDbTransaction());
 
             return employees;
-                
         }
 
         public IUnitOfWork UnitOfWork { get; private set; }

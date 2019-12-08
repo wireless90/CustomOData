@@ -23,6 +23,7 @@ namespace CustomOData.DataAccess
         {
             int? top = oDataQueryOptions?.Top?.Value;
             int? skip = oDataQueryOptions?.Skip?.Value;
+
             Query query = new Query()
                 .From(oDataQueryOptions.Context.NavigationSource.Name)
                 .Skip(skip.HasValue ? skip.Value : 0)
@@ -31,9 +32,6 @@ namespace CustomOData.DataAccess
                 .FilterOData(oDataQueryOptions.Filter?.FilterClause?.Expression)
                 .Select(oDataQueryOptions.SelectExpand == null ? new string[] { "*" } : oDataQueryOptions.SelectExpand.RawSelect.Split(',')); 
                 
-
-
-
             SqlResult sqlResult = _compiler.Compile(query);
 
             IEnumerable<Employee> employees =

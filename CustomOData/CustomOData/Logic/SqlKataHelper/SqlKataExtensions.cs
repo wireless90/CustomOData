@@ -44,24 +44,56 @@ namespace CustomOData.Logic.SqlKataHelper
 
         private static Query ProcessBinaryOperatorNode(Query query, BinaryOperatorNode binaryOperatorNode)
         {
-            if(binaryOperatorNode.OperatorKind == BinaryOperatorKind.Equal)
+            switch(binaryOperatorNode.OperatorKind)
             {
-                SingleValueNode singleValueNodeLeft = binaryOperatorNode.Left;
-                SingleValueNode singleValueNodeRight = binaryOperatorNode.Right;
+                case BinaryOperatorKind.Equal:
+                case BinaryOperatorKind.NotEqual:
+                case BinaryOperatorKind.GreaterThan:
+                case BinaryOperatorKind.GreaterThanOrEqual:
+                case BinaryOperatorKind.LessThan:
+                case BinaryOperatorKind.LessThanOrEqual:
 
-                if(singleValueNodeLeft.Kind == QueryNodeKind.SingleValuePropertyAccess)
-                {
-                    SingleValuePropertyAccessNode singleValuePropertyAccessNodeLeft = singleValueNodeLeft as SingleValuePropertyAccessNode;
-                    
-                    if(binaryOperatorNode.Right.Kind == QueryNodeKind.Constant)
+                    SingleValueNode singleValueNodeLeft = binaryOperatorNode.Left;
+                    SingleValueNode singleValueNodeRight = binaryOperatorNode.Right;
+
+                    if(singleValueNodeLeft.Kind == QueryNodeKind.Constant &&
+                        singleValueNodeRight.Kind == QueryNodeKind.SingleValuePropertyAccess)
                     {
-                        ConstantNode constantNodeRight = singleValueNodeRight as ConstantNode;
-                        return query.Where(singleValuePropertyAccessNodeLeft.Property.Name, constantNodeRight.Value);
-                    }
-                }
-            }
 
+                        SingleValuePropertyAccessNode singleValuePropertyAccessNode = (SingleValuePropertyAccessNode)singleValueNodeRight;
+                        ConstantNode constantNode = (ConstantNode)singleValueNodeLeft;
+
+                        return query.Where(singleValuePropertyAccessNode.Property.Name, 
+                            _binaryOperatorKindToSymbolDictionary[binaryOperatorNode.OperatorKind],
+                            constantNode.Value);
+                    }
+                    else if(singleValueNodeLeft.Kind == QueryNodeKind.SingleValuePropertyAccess &&
+                        singleValueNodeRight.Kind == QueryNodeKind.Constant)
+                    {
+                        SingleValuePropertyAccessNode singleValuePropertyAccessNode = (SingleValuePropertyAccessNode)singleValueNodeLeft;
+                        ConstantNode constantNode = (ConstantNode)singleValueNodeRight;
+
+                        return query.Where(singleValuePropertyAccessNode.Property.Name,
+                            _binaryOperatorKindToSymbolDictionary[binaryOperatorNode.OperatorKind],
+                            constantNode.Value);
+                    }
+                    else
+                    {
+                        throw new NotImplementedException();
+                    }
+            }
+            
             return query;
         }
+
+        private static Dictionary<BinaryOperatorKind, String> _binaryOperatorKindToSymbolDictionary = new Dictionary<BinaryOperatorKind, String>()
+        {
+            {BinaryOperatorKind.Equal,  "=" },
+            {BinaryOperatorKind.GreaterThan, ">" },
+            {BinaryOperatorKind.GreaterThanOrEqual, ">=" },
+            {BinaryOperatorKind.LessThan, "<" },
+            {BinaryOperatorKind.LessThanOrEqual, "<=" },
+            {BinaryOperatorKind.NotEqual, "!=" },
+        };
     }
 }
